@@ -6,7 +6,7 @@ export class PassengerData {
     public static readonly NAME_LENGTH = 50;
 
     @ApiProperty({ description: 'Passenger unique ID', example: '36635263' })
-    public readonly id: number;
+    public readonly id: string;
 
     @ApiProperty({ description: 'First name', example: 'John' })
     public readonly firstName: string;
