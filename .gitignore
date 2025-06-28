@@ -2,7 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=jetbrains,macos,node
 
 # Local .env files
-*.local
+.env
 
 # Vite
 **/dist/
