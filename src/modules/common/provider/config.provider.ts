@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import { z } from 'zod/v4';
 
 import { Service } from '../../tokens';
 import { Config } from '../model';
@@ -7,20 +7,22 @@ export const configProvider = {
   provide: Service.CONFIG,
   useFactory: (): Config => {
     const env = process.env;
-    const validationSchema = Joi.object<Config>().unknown().keys({
-      API_PORT: Joi.number().required(),
-      API_PREFIX: Joi.string().required(),
-      SWAGGER_ENABLE: Joi.number().required(),
-      JWT_SECRET: Joi.string().required(),
-      JWT_ISSUER: Joi.string().required(),
-      HEALTH_TOKEN: Joi.string().required(),
+    const validationSchema = z.object({
+      API_PORT: z.coerce.number(),
+      API_PREFIX: z.string(),
+      SWAGGER_ENABLE: z.coerce.number(),
+      JWT_SECRET: z.string(),
+      JWT_ISSUER: z.string(),
+      HEALTH_TOKEN: z.string(),
     });
 
-    const result = validationSchema.validate(env);
-    if (result.error) {
-      throw new Error(`Configuration not valid: ${result.error.message}`);
+    const result = validationSchema.safeParse(env);
+
+    if (!result.success) {
+      const errors = result.error.flatten().fieldErrors;
+      throw new Error(`Configuration not valid:\n${JSON.stringify(errors, null, 2)}`);
     }
 
-    return result.value;
+    return result.data;
   },
 };
