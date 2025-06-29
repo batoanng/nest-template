@@ -9,7 +9,7 @@ export const configProvider = {
     const env = process.env;
     const validationSchema = z.object({
       API_PORT: z.coerce.number(),
-      API_PREFIX: z.string(),
+      API_VERSION: z.coerce.number(),
       SWAGGER_ENABLE: z.coerce.number(),
       JWT_SECRET: z.string(),
       JWT_ISSUER: z.string(),
