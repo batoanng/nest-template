@@ -19,8 +19,8 @@ const API_DEFAULT_VERSION = 1;
  *
  * @todo Change the constants below following your API requirements
  */
-const SWAGGER_TITLE = 'Passenger API';
-const SWAGGER_DESCRIPTION = 'API used for passenger management';
+const SWAGGER_TITLE = 'NestJS Template API';
+const SWAGGER_DESCRIPTION = 'NestJS Template API';
 const SWAGGER_PREFIX = '/docs';
 
 /**
