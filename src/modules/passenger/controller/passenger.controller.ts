@@ -1,7 +1,7 @@
-import { Body, Controller, Get, HttpStatus, Inject, Post, PreconditionFailedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Inject, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { Config, LoggerService, RestrictedGuard } from '../../common';
+import {  LoggerService, RestrictedGuard } from '../../common';
 import { Service } from '../../tokens';
 
 import { PassengerPipe } from '../flow';
@@ -15,7 +15,6 @@ export class PassengerController {
 
     public constructor(
         @Inject(Service.CONFIG)
-        private readonly config: Config,
         private readonly logger: LoggerService,
         private readonly passengerService: PassengerService
     ) { }
@@ -33,11 +32,6 @@ export class PassengerController {
     @ApiOperation({ summary: 'Create passenger' })
     @ApiResponse({ status: HttpStatus.CREATED, type: PassengerData })
     public async create(@Body(PassengerPipe) input: PassengerInput): Promise<PassengerData> {
-
-        if (this.config.PASSENGERS_ALLOWED === 'no') {
-            throw new PreconditionFailedException('Not allowed to onboard passengers');
-        }
-
         const passenger = await this.passengerService.create(input);
         this.logger.info(`Created new passenger with ID ${passenger.id}`);
 
