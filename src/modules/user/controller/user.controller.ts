@@ -30,7 +30,12 @@ export class UserController {
   @ApiResponse({ status: HttpStatus.CREATED, type: UserData })
   public async create(@Body(UserPipe) input: UserInput): Promise<UserData> {
     const user = await this.userService.create(input);
-    this.logger.info(`Created new user with ID ${user.id}`);
+    this.logger.info({
+      status: HttpStatus.CREATED,
+      method: 'POST',
+      url: '/users',
+      message: `Created new user with ID ${user.id}`,
+    });
 
     return user;
   }

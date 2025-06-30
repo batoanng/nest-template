@@ -16,18 +16,24 @@ export class LogInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data: FastifyReply) => {
         const responseStatus = request.method === 'POST' ? HttpStatus.CREATED : HttpStatus.OK;
-        this.logger.info(
-          `${this.getTimeDelta(startTime)}ms ${request.ip} ${responseStatus} ${request.method} ${this.getUrl(request)}`
-        );
+        this.logger.info({
+          time: this.getTimeDelta(startTime),
+          ip: request.ip,
+          status: responseStatus,
+          method: request.method,
+          url: this.getUrl(request),
+        });
         return data;
       }),
       catchError((err: unknown) => {
-        // Log format inspired by the Squid docs
-        // See https://docs.trafficserver.apache.org/en/6.1.x/admin-guide/monitoring/logging/log-formats.en.html
         const status = this.hasStatus(err) ? err.status : 'XXX';
-        this.logger.error(
-          `${this.getTimeDelta(startTime)}ms ${request.ip} ${status} ${request.method} ${this.getUrl(request)}`
-        );
+        this.logger.error({
+          time: this.getTimeDelta(startTime),
+          ip: request.ip,
+          status: status,
+          method: request.method,
+          url: this.getUrl(request),
+        });
         return throwError(err);
       })
     );

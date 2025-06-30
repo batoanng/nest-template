@@ -5,4 +5,7 @@ export interface Config {
   readonly JWT_SECRET: string;
   readonly JWT_ISSUER: string;
   readonly HEALTH_TOKEN: string;
+  readonly NEW_RELIC_URL: string;
+  readonly NEW_RELIC_APP_NAME: string;
+  readonly NEW_RELIC_KEY: string;
 }

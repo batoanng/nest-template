@@ -14,6 +14,9 @@ export const configProvider = {
       JWT_SECRET: z.string(),
       JWT_ISSUER: z.string(),
       HEALTH_TOKEN: z.string(),
+      NEW_RELIC_URL: z.string().url(),
+      NEW_RELIC_APP_NAME: z.string(),
+      NEW_RELIC_KEY: z.string(),
     });
 
     const result = validationSchema.safeParse(env);
