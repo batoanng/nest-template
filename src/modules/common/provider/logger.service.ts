@@ -25,29 +25,37 @@ export class LoggerService {
 
   public info(payload: LogPayload) {
     this.instance.info(this.serializeMessage(payload));
-    this.sendToNewRelic(payload);
+    this.sendToNewRelic(payload, 'INFO');
   }
 
   public error(payload: LogPayload) {
     this.instance.error(this.serializeMessage(payload));
-    this.sendToNewRelic(payload);
+    this.sendToNewRelic(payload, 'ERROR');
   }
 
   private serializeMessage(payload: LogPayload) {
     return `${payload.time || 'UNKNOWN'}ms ${payload.ip || 'UNKNOWN'} ${payload.status || 'UNKNOWN'} ${payload.method || 'UNKNOWN'} ${payload.url || 'UNKNOWN'}: ${payload.message || ''}`;
   }
 
-  private async sendToNewRelic(payload: LogPayload): Promise<void> {
+  private async sendToNewRelic(payload: LogPayload, level: string): Promise<void> {
     if (!process.env.NEW_RELIC_KEY || !this.isProductionEnv()) return;
-    if (!process.env.NEW_RELIC_KEY) return;
 
     try {
-      await axios.post(process.env.NEW_RELIC_URL!, payload, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Api-Key': process.env.NEW_RELIC_KEY,
+      await axios.post(
+        process.env.NEW_RELIC_URL!,
+        {
+          attributes: {
+            'log.level': level,
+            ...payload,
+          },
         },
-      });
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Api-Key': process.env.NEW_RELIC_KEY,
+          },
+        }
+      );
     } catch (err) {
       this.instance.warn('Failed to send log to New Relic');
     }
